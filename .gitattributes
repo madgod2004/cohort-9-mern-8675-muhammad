@@ -1,0 +1,12 @@
+# Normalize line endings: LF in the repository and in working copies.
+* text=auto eol=lf
+
+# Binary files Git should never try to convert or diff as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
