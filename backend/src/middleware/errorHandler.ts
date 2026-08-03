@@ -10,7 +10,7 @@ export function notFoundHandler(req: Request, _res: Response, next: NextFunction
   next(new AppError(404, `Route not found: ${req.method} ${req.originalUrl}`));
 }
 
-export function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunction): void {
+export function errorHandler(err: unknown, req: Request, res: Response, next: NextFunction): void {
   const isAppError = err instanceof AppError;
   const statusCode = isAppError ? err.statusCode : 500;
   const exposeMessage = isAppError && err.isOperational;
@@ -25,8 +25,9 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
     err instanceof Error ? err.message : 'Unknown error thrown',
   );
 
+  // express's default handler closes a half-written response
   if (res.headersSent) {
-    return;
+    return next(err);
   }
 
   res.status(statusCode).json({
