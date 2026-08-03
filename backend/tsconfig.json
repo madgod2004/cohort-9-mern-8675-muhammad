@@ -1,15 +1,16 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
+  // Base config: type-checks BOTH src and test. Used by the editor and by
+  // `npm run typecheck`. Emitting is done by tsconfig.build.json instead,
+  // so that compiled test files never end up in dist/.
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "noEmit": true,
 
     // Environment Settings
     "module": "nodenext",
     "target": "esnext",
     "lib": ["esnext"],
-    "types": ["node"],
+    "types": ["node", "mocha"],
 
     // Other Outputs
     "sourceMap": true,
@@ -25,6 +26,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules", "dist"]
 }

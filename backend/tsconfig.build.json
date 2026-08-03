@@ -1,0 +1,12 @@
+{
+  // Build config: compiles only src/ into dist/, keeping test files out of
+  // the production bundle. Used by `npm run build`.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test"]
+}
