@@ -1,25 +1,17 @@
 {
-  // Base config: type-checks BOTH src and test. Used by the editor and by
-  // `npm run typecheck`. Emitting is done by tsconfig.build.json instead,
-  // so that compiled test files never end up in dist/.
+  // typecheck only - build output comes from tsconfig.build.json
   "compilerOptions": {
-    // File Layout
     "noEmit": true,
 
-    // Environment Settings
     "module": "nodenext",
     "target": "esnext",
     "lib": ["esnext"],
     "types": ["node", "mocha"],
 
-    // Other Outputs
     "sourceMap": true,
 
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-
-    // Recommended Options
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
