@@ -7,6 +7,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
+  MONGO_URI: z.string().startsWith('mongodb://'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -25,4 +26,5 @@ export const config = Object.freeze({
   logLevel: env.LOG_LEVEL,
   isDevelopment: env.NODE_ENV === 'development',
   isProduction: env.NODE_ENV === 'production',
+  mongoUri: env.MONGO_URI,
 });
