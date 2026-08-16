@@ -11,7 +11,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc",
     "start": "node dist/server.js",
-    "test": "cross-env NODE_ENV=test LOG_LEVEL=silent mocha",
+    "test": "cross-env NODE_ENV=test LOG_LEVEL=silent MONGO_URI=mongodb://127.0.0.1:27017/notes_app_test mocha",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
