@@ -22,14 +22,19 @@ async function start(): Promise<void> {
 async function shutdown(): Promise<void> {
   logger.info('shutting down');
 
-  if (server) {
-    await new Promise<void>((resolve) => server?.close(() => resolve()));
+  try {
+    if (server) {
+      await new Promise<void>((resolve) => server?.close(() => resolve()));
+    }
+    await disconnectDB();
+    process.exit(0);
+  } catch (err) {
+    logger.error({ err }, 'shutdown failed');
+    process.exit(1);
   }
-
-  await disconnectDB();
-  process.exit(0);
 }
 
 process.on('SIGINT', () => void shutdown());
+process.on('SIGTERM', () => void shutdown());
 
 void start();
