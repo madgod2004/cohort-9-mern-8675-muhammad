@@ -12,3 +12,7 @@ export const loginSchema = z.object({
   email,
   password: z.string().min(1),
 });
+
+// derived from the schemas so the runtime contract and the types cannot drift
+export type SignupInput = z.infer<typeof signupSchema>;
+export type LoginInput = z.infer<typeof loginSchema>;

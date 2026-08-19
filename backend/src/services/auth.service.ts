@@ -1,6 +1,11 @@
 import { AppError } from '../errors/AppError';
 import { signToken } from '../lib/jwt';
-import { type UserDocument, userRepository } from '../repositories/user.repository';
+import {
+  type UserDocument,
+  type UserWithoutPassword,
+  userRepository,
+} from '../repositories/user.repository';
+import type { LoginInput, SignupInput } from '../schemas/auth.schema';
 
 export interface PublicUser {
   id: string;
@@ -13,18 +18,7 @@ export interface AuthResult {
   user: PublicUser;
 }
 
-export interface SignupInput {
-  email: string;
-  password: string;
-  name: string;
-}
-
-export interface LoginInput {
-  email: string;
-  password: string;
-}
-
-function toPublicUser(user: UserDocument): PublicUser {
+function toPublicUser(user: UserDocument | UserWithoutPassword): PublicUser {
   return {
     id: user._id.toString(),
     email: user.email,

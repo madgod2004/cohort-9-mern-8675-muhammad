@@ -36,7 +36,8 @@ describe('user repository', () => {
 
       const found = await userRepository.findByEmail('bob@example.com');
 
-      expect(found?.password).to.equal(undefined);
+      // the return type no longer declares password, so assert on the document
+      expect(found?.toObject()).to.not.have.property('password');
     });
   });
 

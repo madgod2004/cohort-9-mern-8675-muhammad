@@ -1,6 +1,7 @@
 import type { CookieOptions, Request, Response } from 'express';
 
 import { config } from '../config';
+import type { LoginInput, SignupInput } from '../schemas/auth.schema';
 import * as authService from '../services/auth.service';
 
 export const AUTH_COOKIE = 'token';
@@ -15,23 +16,16 @@ const cookieOptions: CookieOptions = {
   path: '/',
 };
 
+// validateBody has already parsed req.body against the matching schema
 export async function signup(req: Request, res: Response): Promise<void> {
-  const { email, password, name } = req.body as {
-    email: string;
-    password: string;
-    name: string;
-  };
-
-  const result = await authService.signup({ email, password, name });
+  const result = await authService.signup(req.body as SignupInput);
 
   res.cookie(AUTH_COOKIE, result.token, cookieOptions);
   res.status(201).json({ user: result.user });
 }
 
 export async function login(req: Request, res: Response): Promise<void> {
-  const { email, password } = req.body as { email: string; password: string };
-
-  const result = await authService.login({ email, password });
+  const result = await authService.login(req.body as LoginInput);
 
   res.cookie(AUTH_COOKIE, result.token, cookieOptions);
   res.status(200).json({ user: result.user });
