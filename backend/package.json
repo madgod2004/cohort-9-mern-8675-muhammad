@@ -11,7 +11,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc",
     "start": "node dist/server.js",
-    "test": "cross-env NODE_ENV=test LOG_LEVEL=silent MONGO_URI=mongodb://127.0.0.1:27017/notes_app_test mocha",
+    "test": "cross-env NODE_ENV=test LOG_LEVEL=silent MONGO_URI=mongodb://127.0.0.1:27017/notes_app_test BCRYPT_ROUNDS=4 mocha",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -23,8 +23,11 @@
   "type": "commonjs",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/chai": "^5.2.3",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mocha": "^10.0.10",
     "@types/node": "^26.1.2",
     "@types/sanitize-html": "^2.16.1",
@@ -43,9 +46,12 @@
     "typescript-eslint": "^8.65.0"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.1",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",

@@ -18,7 +18,7 @@ describe('User model', () => {
   it('hides the password unless explicitly selected', async () => {
     const user = await User.create({
       email: 'bob@example.com',
-      password: 'hashed-password',
+      password: 'plain-password',
       name: 'Bob',
     });
 
@@ -26,7 +26,47 @@ describe('User model', () => {
     expect(found?.password).to.equal(undefined);
 
     const withPassword = await User.findById(user._id).select('+password');
-    expect(withPassword?.password).to.equal('hashed-password');
+    expect(withPassword?.password).to.be.a('string');
+  });
+
+  it('hashes the password on save', async () => {
+    const user = await User.create({
+      email: 'bob@example.com',
+      password: 'plain-password',
+      name: 'Bob',
+    });
+
+    const withPassword = await User.findById(user._id).select('+password');
+    expect(withPassword?.password).to.not.equal('plain-password');
+    expect(withPassword?.password).to.match(/^\$2[aby]\$/);
+  });
+
+  it('compares a candidate password against the hash', async () => {
+    const user = await User.create({
+      email: 'bob@example.com',
+      password: 'plain-password',
+      name: 'Bob',
+    });
+
+    const withPassword = await User.findById(user._id).select('+password');
+    expect(await withPassword?.comparePassword('plain-password')).to.equal(true);
+    expect(await withPassword?.comparePassword('wrong-password')).to.equal(false);
+  });
+
+  it('does not rehash when other fields change', async () => {
+    const user = await User.create({
+      email: 'bob@example.com',
+      password: 'plain-password',
+      name: 'Bob',
+    });
+
+    const withPassword = await User.findById(user._id).select('+password');
+    const originalHash = withPassword?.password;
+
+    withPassword!.name = 'Robert';
+    await withPassword!.save();
+
+    expect(withPassword?.password).to.equal(originalHash);
   });
 
   it('rejects a duplicate email', async () => {

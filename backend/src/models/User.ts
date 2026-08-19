@@ -1,4 +1,7 @@
-import { model, Schema } from 'mongoose';
+import bcrypt from 'bcrypt';
+import { model, Schema, type Model } from 'mongoose';
+
+import { config } from '../config';
 
 export interface IUser {
   email: string;
@@ -8,7 +11,11 @@ export interface IUser {
   updatedAt: Date;
 }
 
-const userSchema = new Schema<IUser>(
+export interface IUserMethods {
+  comparePassword(candidate: string): Promise<boolean>;
+}
+
+const userSchema = new Schema<IUser, object, IUserMethods>(
   {
     email: {
       type: String,
@@ -32,4 +39,14 @@ const userSchema = new Schema<IUser>(
   { timestamps: true },
 );
 
-export const User = model<IUser>('User', userSchema);
+userSchema.pre('save', async function () {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, config.bcryptRounds);
+  }
+});
+
+userSchema.methods.comparePassword = function (candidate: string): Promise<boolean> {
+  return bcrypt.compare(candidate, this.password);
+};
+
+export const User = model<IUser, Model<IUser, object, IUserMethods>>('User', userSchema);
