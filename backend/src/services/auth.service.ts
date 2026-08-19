@@ -1,7 +1,6 @@
 import { AppError } from '../errors/AppError';
 import { signToken } from '../lib/jwt';
-import * as userRepository from '../repositories/user.repository';
-import type { UserDocument } from '../repositories/user.repository';
+import { type UserDocument, userRepository } from '../repositories/user.repository';
 
 export interface PublicUser {
   id: string;

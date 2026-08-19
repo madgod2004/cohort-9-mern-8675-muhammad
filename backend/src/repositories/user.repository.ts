@@ -4,18 +4,23 @@ import { type IUser, type IUserMethods, User } from '../models/User';
 
 export type UserDocument = HydratedDocument<IUser, IUserMethods>;
 
-export function findByEmail(email: string): Promise<UserDocument | null> {
-  return User.findOne({ email }).exec();
-}
+// exported as an object rather than loose functions so tests can replace
+// individual methods; bare function exports are immutable once compiled
+export const userRepository = {
+  findByEmail(email: string): Promise<UserDocument | null> {
+    return User.findOne({ email }).exec();
+  },
 
-export function findByEmailWithPassword(email: string): Promise<UserDocument | null> {
-  return User.findOne({ email }).select('+password').exec();
-}
+  // the password field is select:false, so callers that need it must ask here
+  findByEmailWithPassword(email: string): Promise<UserDocument | null> {
+    return User.findOne({ email }).select('+password').exec();
+  },
 
-export function findById(id: string): Promise<UserDocument | null> {
-  return User.findById(id).exec();
-}
+  findById(id: string): Promise<UserDocument | null> {
+    return User.findById(id).exec();
+  },
 
-export function create(data: Pick<IUser, 'email' | 'password' | 'name'>): Promise<UserDocument> {
-  return User.create(data);
-}
+  create(data: Pick<IUser, 'email' | 'password' | 'name'>): Promise<UserDocument> {
+    return User.create(data);
+  },
+};
