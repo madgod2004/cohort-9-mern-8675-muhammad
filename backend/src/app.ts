@@ -9,6 +9,7 @@ import { isDBConnected } from './lib/db';
 import { logger } from './lib/logger';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { authRouter } from './routes/auth.routes';
+import { noteRouter } from './routes/note.routes';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/notes', noteRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
