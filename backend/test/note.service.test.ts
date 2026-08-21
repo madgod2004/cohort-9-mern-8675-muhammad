@@ -8,7 +8,9 @@ import * as noteService from '../src/services/note.service';
 const OWNER = 'owner-id-1';
 const OTHER = 'owner-id-2';
 
-function fakeNote(overrides: Record<string, unknown> = {}) {
+type NoteOverrides = Partial<Record<keyof NoteDocument, unknown>>;
+
+function fakeNote(overrides: NoteOverrides = {}): NoteDocument {
   return {
     _id: { toString: () => 'note-id-1' },
     title: 'Meeting',

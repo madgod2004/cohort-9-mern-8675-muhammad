@@ -30,10 +30,13 @@ describe('note repository', () => {
 
     it('sorts most recently updated first', async () => {
       const first = await note(alice, 'Older');
-      await note(alice, 'Newer');
+      const second = await note(alice, 'Newer');
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       first.title = 'Older, now touched';
-      await noteRepository.save(first);
+      const saved = await noteRepository.save(first);
+      expect(saved.updatedAt.getTime()).to.be.greaterThan(second.updatedAt.getTime());
 
       const notes = await noteRepository.listByOwner(alice);
       expect(notes[0]?.title).to.equal('Older, now touched');
