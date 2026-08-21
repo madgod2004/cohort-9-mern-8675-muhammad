@@ -21,6 +21,7 @@ const envSchema = z.object({
     .refine((s) => s !== PLACEHOLDER_SECRET, 'must not be the example placeholder value'),
   JWT_EXPIRES_IN: z.string().regex(DURATION, 'must be a duration like 30m or 7d').default('7d'),
   BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
+  CORS_ORIGIN: z.url().default('http://localhost:5173'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -43,4 +44,5 @@ export const config = Object.freeze({
   jwtSecret: env.JWT_SECRET,
   jwtExpiresIn: env.JWT_EXPIRES_IN,
   bcryptRounds: env.BCRYPT_ROUNDS,
+  corsOrigin: env.CORS_ORIGIN,
 });
