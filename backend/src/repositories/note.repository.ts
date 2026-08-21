@@ -21,7 +21,6 @@ export const noteRepository = {
     return Note.create(data);
   },
 
-
   save(note: NoteDocument): Promise<NoteDocument> {
     return note.save();
   },
