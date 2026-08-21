@@ -3,8 +3,6 @@ import { z } from 'zod';
 
 dotenv.config({ quiet: true });
 
-// the placeholder in .env.example is long enough to pass the length check, so
-// reject it by name in case it is ever copied unchanged into a real .env
 const PLACEHOLDER_SECRET = 'replace-with-a-random-string-of-at-least-32-characters';
 
 // the duration grammar jsonwebtoken accepts, e.g. 30s, 15m, 7d
@@ -21,6 +19,15 @@ const envSchema = z.object({
     .refine((s) => s !== PLACEHOLDER_SECRET, 'must not be the example placeholder value'),
   JWT_EXPIRES_IN: z.string().regex(DURATION, 'must be a duration like 30m or 7d').default('7d'),
   BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
+
+  CORS_ORIGIN: z
+    .url()
+    .refine((v) => {
+      const u = new URL(v);
+      return u.pathname === '/' && !u.search && !u.hash && !u.username;
+    }, 'must be a bare origin, with no path, query or fragment')
+    .transform((v) => new URL(v).origin)
+    .default('http://localhost:5173'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -43,4 +50,5 @@ export const config = Object.freeze({
   jwtSecret: env.JWT_SECRET,
   jwtExpiresIn: env.JWT_EXPIRES_IN,
   bcryptRounds: env.BCRYPT_ROUNDS,
+  corsOrigin: env.CORS_ORIGIN,
 });
