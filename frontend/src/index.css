@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=DM+Sans:wght@400;500;700&display=swap');
+
+:root {
+  /* surfaces */
+  --bg: #efe8e1;
+  --surface: #fdfaf6;
+  --surface-input: #ffffff;
+  --surface-muted: #f3ede6;
+
+  /* ink */
+  --ink: #1a1a18;
+  --ink-body: #2e2b27;
+  --ink-muted: #6e6a64;
+  --ink-meta: #4a463f;
+
+  /* accents */
+  --accent: #f58b8b;
+  --danger: #e85d4e;
+  --danger-text: #c4463a;
+  --link: #c4564f;
+  --link-hover: #8f3a35;
+
+  /* note card tints, cycled by index */
+  --tint-1: #f6d9d3;
+  --tint-2: #f5dfa8;
+  --tint-3: #d9e4dc;
+  --tint-4: #f3cbb6;
+  --avatar: #f0a03c;
+
+  /* the retro signature: solid borders, hard offset shadows, no blur */
+  --border-w: 2.5px;
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-sm: 3px 3px 0 var(--ink);
+  --shadow-lg: 6px 6px 0 var(--ink);
+
+  --radius-card: 20px;
+  --radius-panel: 24px;
+  --radius-input: 14px;
+  --radius-pill: 999px;
+
+  --display: 'Bakbak One', 'Trebuchet MS', sans-serif;
+  --sans: 'DM Sans', 'Trebuchet MS', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0;
+}
+
+a {
+  color: var(--link);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+button {
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+/* Shared retro primitives. Screens compose these rather than
+   re-declaring borders and shadows each time. */
+
+.panel {
+  background: var(--surface);
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-lg);
+}
+
+.card {
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  background: transparent;
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 13px 24px;
+  min-height: 44px;
+}
+
+.btn--primary {
+  background: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.btn--danger {
+  background: var(--danger);
+  color: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.field {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink-body);
+  background: var(--surface-input);
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius-input);
+  padding: 13px 15px;
+  min-height: 44px;
+}
+
+.field:focus {
+  outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.field--invalid {
+  border-color: var(--danger);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.error-text {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--danger-text);
+}
+
+.hint-text {
+  font-size: 13.5px;
+  color: var(--ink-muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
