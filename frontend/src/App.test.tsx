@@ -20,7 +20,7 @@ describe('App routing', () => {
 
     render(<App />);
 
-    expect(await screen.findByRole('heading', { name: 'Log in' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
   });
 
   it('sends a signed-in visitor to the dashboard', async () => {
@@ -38,7 +38,7 @@ describe('App routing', () => {
     render(<App />);
 
     expect(await screen.findByText(/alice@example.com/)).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Log in' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Welcome back' })).not.toBeInTheDocument();
   });
 
   it('shows neither screen while the session is still being checked', () => {
@@ -46,7 +46,7 @@ describe('App routing', () => {
 
     render(<App />);
 
-    expect(screen.queryByRole('heading', { name: 'Log in' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Welcome back' })).not.toBeInTheDocument();
     expect(screen.queryByText(/alice@example.com/)).not.toBeInTheDocument();
   });
 });

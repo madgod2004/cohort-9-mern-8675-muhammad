@@ -7,7 +7,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-
   useEffect(() => {
     let cancelled = false;
 
@@ -41,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authApi.logout();
     } catch {
-  
+      // ignored on purpose: a failed request must not leave the UI signed in
     }
     setUser(null);
   }, []);
