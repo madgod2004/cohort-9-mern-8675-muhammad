@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { authApi } from './api/auth';
 import { notesApi } from './api/notes';
+import { fakeUser } from '../test/factories';
 import App from './App';
 
 jest.mock('./api/auth', () => ({
@@ -20,9 +21,6 @@ jest.mock('./api/notes', () => ({
 
 const mockedAuth = authApi as jest.Mocked<typeof authApi>;
 const mockedNotes = notesApi as jest.Mocked<typeof notesApi>;
-
-// the dashboard is identified by a control only it has, rather than by any
-// particular piece of user text, which is free to move as the screen changes
 const dashboardMarker = { name: 'New note' } as const;
 
 describe('App routing', () => {
@@ -41,7 +39,7 @@ describe('App routing', () => {
   });
 
   it('sends a signed-in visitor to the dashboard', async () => {
-    mockedAuth.me.mockResolvedValue({ id: '1', email: 'alice@example.com', name: 'Alice' });
+    mockedAuth.me.mockResolvedValue(fakeUser());
 
     render(<App />);
 
@@ -49,7 +47,7 @@ describe('App routing', () => {
   });
 
   it('keeps a signed-in visitor away from the login screen', async () => {
-    mockedAuth.me.mockResolvedValue({ id: '1', email: 'alice@example.com', name: 'Alice' });
+    mockedAuth.me.mockResolvedValue(fakeUser());
     window.history.pushState({}, '', '/login');
 
     render(<App />);

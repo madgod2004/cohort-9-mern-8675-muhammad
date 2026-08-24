@@ -11,6 +11,7 @@ export interface PublicUser {
   id: string;
   email: string;
   name: string;
+  createdAt: Date;
 }
 
 export interface AuthResult {
@@ -23,6 +24,7 @@ function toPublicUser(user: UserDocument | UserWithoutPassword): PublicUser {
     id: user._id.toString(),
     email: user.email,
     name: user.name,
+    createdAt: user.createdAt,
   };
 }
 

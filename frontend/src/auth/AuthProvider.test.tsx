@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { authApi } from '../api/auth';
 import { AuthProvider } from './AuthProvider';
 import { useAuth } from './useAuth';
+import { fakeUser } from '../../test/factories';
 
 jest.mock('../api/auth', () => ({
   authApi: {
@@ -14,7 +15,7 @@ jest.mock('../api/auth', () => ({
 }));
 
 const mocked = authApi as jest.Mocked<typeof authApi>;
-const alice = { id: '1', email: 'alice@example.com', name: 'Alice' };
+const alice = fakeUser();
 
 function Probe() {
   const { user, isLoading, login, logout } = useAuth();
