@@ -78,6 +78,12 @@ export function NoteCard({ note, onOpen, onRename, onDuplicate, onDelete }: Note
     if (event.key === 'Escape') {
       cancelRename();
     }
+    // a lone field with no submit button only submits by the browser's implicit
+    // rule, which is too shaky to hang the whole rename on
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      void commitRename();
+    }
   }
 
   function handleSubmit(event: FormEvent) {

@@ -1,0 +1,199 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 36px 40px;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.wordmark {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+}
+
+.summary {
+  margin: 0;
+  font-size: 17px;
+  color: var(--ink-muted);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.account:hover {
+  color: var(--ink);
+}
+
+.account:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: var(--radius-pill);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  font-size: 16px;
+  font-weight: 700;
+  background: var(--avatar);
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+
+.accountName {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.newNote {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.status {
+  margin: 0;
+  font-size: 16px;
+  color: var(--ink-muted);
+}
+
+.notice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 28px;
+  background: var(--surface);
+}
+
+.noticeHeading {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.noticeText {
+  margin: 0;
+  font-size: 15.5px;
+  color: var(--ink-body);
+}
+
+@media (width <= 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .page {
+    padding: 24px 24px 32px;
+  }
+}
+
+@media (width <= 600px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (width <= 480px) {
+  .page {
+    gap: 18px;
+    padding: 20px 18px 24px;
+  }
+
+  .header {
+    align-items: flex-start;
+  }
+
+  .wordmark {
+    font-size: 32px;
+  }
+
+  .summary {
+    font-size: 14px;
+  }
+
+  .lastEdited,
+  .accountName {
+    display: none;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 15px;
+  }
+
+  .actions {
+    /* the button leaves the flow and floats over the list, as in the design */
+    display: contents;
+  }
+
+  .newNote {
+    position: fixed;
+    right: 18px;
+    bottom: 24px;
+    z-index: 20;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    padding: 0;
+    border-radius: var(--radius-pill);
+  }
+
+  /* kept for screen readers, which is why this is not display: none */
+  .newNoteLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .grid {
+    gap: 14px;
+    /* clears the floating button so the last card is never trapped under it */
+    padding-bottom: 78px;
+  }
+}
