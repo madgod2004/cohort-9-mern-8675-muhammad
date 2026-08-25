@@ -43,7 +43,9 @@ export function useNotes(): UseNotesResult {
     return notesApi
       .list()
       .then((fetched) => {
-        if (isCurrent()) setNotes(fetched);
+        // sorted here as well as after a mutation, so the order is this
+        // component's own guarantee rather than something the server owes it
+        if (isCurrent()) setNotes(newestFirst(fetched));
       })
       .catch((err: unknown) => {
         if (isCurrent()) setError(messageFrom(err, 'Could not load your notes.'));

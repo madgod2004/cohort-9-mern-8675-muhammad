@@ -64,6 +64,8 @@ describe('NoteCard', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Groceries' }));
 
       expect(props.onOpen).toHaveBeenCalledWith(note);
+      // the click must not also bubble to the card's own open handler
+      expect(props.onOpen).toHaveBeenCalledTimes(1);
     });
 
     it('does not open the note when the menu is used', async () => {
@@ -147,8 +149,6 @@ describe('NoteCard', () => {
       await userEvent.clear(input);
       await userEvent.type(input, 'Weekly shop');
 
-      // both events reach the still-mounted input before React re-renders,
-      // which is the case the settled guard exists for
       await act(async () => {
         fireEvent.keyDown(input, { key: 'Enter' });
         fireEvent.blur(input);

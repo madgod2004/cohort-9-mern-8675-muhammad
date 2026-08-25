@@ -78,8 +78,6 @@ export function NoteCard({ note, onOpen, onRename, onDuplicate, onDelete }: Note
     if (event.key === 'Escape') {
       cancelRename();
     }
-    // a lone field with no submit button only submits by the browser's implicit
-    // rule, which is too shaky to hang the whole rename on
     if (event.key === 'Enter') {
       event.preventDefault();
       void commitRename();
@@ -132,8 +130,16 @@ export function NoteCard({ note, onOpen, onRename, onDuplicate, onDelete }: Note
             />
           </form>
         ) : (
-          // a button as well as the card click, so the note opens from the keyboard too
-          <button type="button" className={styles.title} onClick={() => onOpen(note)}>
+          // a button as well as the card click, so the note opens from the
+          // keyboard too; the click stops here or the card would open it twice
+          <button
+            type="button"
+            className={styles.title}
+            onClick={(event) => {
+              event.stopPropagation();
+              onOpen(note);
+            }}
+          >
             {note.title}
           </button>
         )}

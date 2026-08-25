@@ -52,6 +52,15 @@ describe('useNotes', () => {
       expect(result.current.error).toBeNull();
     });
 
+    it('puts the newest first even if the server sends them out of order', async () => {
+      mocked.list.mockResolvedValue([older, newer]);
+
+      const { result } = renderHook(() => useNotes());
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
+      expect(result.current.notes).toEqual([newer, older]);
+    });
+
     it('reports the server message when the list cannot be fetched', async () => {
       mocked.list.mockRejectedValue(new ApiError(500, 'Something went wrong.'));
 
