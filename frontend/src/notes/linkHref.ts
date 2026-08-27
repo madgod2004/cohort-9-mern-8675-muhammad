@@ -6,8 +6,11 @@ export function normaliseHref(raw: string): string | null {
     return null;
   }
 
+  const hasPort = /^[a-z0-9.-]+:\d+(?:[/?#]|$)/i.test(trimmed);
+  const hasScheme = !hasPort && /^[a-z][a-z0-9+.-]*:/i.test(trimmed);
+
   // a bare domain is what people usually type, so assume https for it
-  const candidate = /^[a-z][a-z0-9+.-]*:/i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const candidate = hasScheme ? trimmed : `https://${trimmed}`;
 
   let url: URL;
   try {

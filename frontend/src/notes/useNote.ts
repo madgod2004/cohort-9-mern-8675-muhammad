@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError } from '../api/client';
 import { type Note, notesApi } from '../api/notes';
 
@@ -24,17 +24,29 @@ export function useNote(id: string | undefined): UseNoteResult {
     setIsMissing(false);
   }
 
+  const latestRequest = useRef(0);
+
   const load = useCallback((noteId: string) => {
+    const requestId = (latestRequest.current += 1);
+    const isCurrent = () => requestId === latestRequest.current;
+
     return notesApi
       .get(noteId)
-      .then(setNote)
+      .then((fetched) => {
+        if (isCurrent()) setNote(fetched);
+      })
       .catch((err: unknown) => {
+        if (!isCurrent()) {
+          return;
+        }
         if (err instanceof ApiError && err.status === 404) {
           setIsMissing(true);
         }
         setError(err instanceof Error ? err.message : 'Could not open that note.');
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        if (isCurrent()) setIsLoading(false);
+      });
   }, []);
 
   useEffect(() => {

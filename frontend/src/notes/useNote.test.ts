@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { fakeNote } from '../../test/factories';
 import { ApiError } from '../api/client';
@@ -16,6 +16,15 @@ jest.mock('../api/notes', () => ({
 }));
 
 const mocked = notesApi as jest.Mocked<typeof notesApi>;
+
+/** a promise whose settling this test controls */
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((r) => {
+    resolve = r;
+  });
+  return { promise, resolve };
+}
 
 const groceries = fakeNote({ id: 'a', title: 'Groceries' });
 const trip = fakeNote({ id: 'b', title: 'Trip planning' });
@@ -92,6 +101,28 @@ describe('useNote', () => {
 
       expect(result.current.note).toBeNull();
       expect(result.current.isLoading).toBe(true);
+    });
+
+    it('ignores a slow first note that answers after the second', async () => {
+      const first = deferred<typeof groceries>();
+      const second = deferred<typeof groceries>();
+      mocked.get.mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise);
+
+      const { result, rerender } = renderHook(({ id }) => useNote(id), {
+        initialProps: { id: 'a' as string | undefined },
+      });
+      rerender({ id: 'b' });
+
+      await act(async () => {
+        second.resolve(trip);
+        await second.promise;
+      });
+      await act(async () => {
+        first.resolve(groceries);
+        await first.promise;
+      });
+
+      expect(result.current.note).toEqual(trip);
     });
 
     it('clears a previous error when moving to another note', async () => {

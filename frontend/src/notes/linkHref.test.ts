@@ -10,6 +10,17 @@ describe('normaliseHref', () => {
     expect(normaliseHref('example.com/plans')).toBe('https://example.com/plans');
   });
 
+  it('handles a bare host with a port, which reads like a scheme', () => {
+    expect(normaliseHref('example.com:8443')).toBe('https://example.com:8443/');
+    expect(normaliseHref('localhost:3000')).toBe('https://localhost:3000/');
+    expect(normaliseHref('example.com:8443/plans')).toBe('https://example.com:8443/plans');
+  });
+
+  it('still treats a real scheme as a scheme', () => {
+    expect(normaliseHref('mailto:alice@example.com')).toBe('mailto:alice@example.com');
+    expect(normaliseHref('https://example.com:8443/')).toBe('https://example.com:8443/');
+  });
+
   it('allows plain http', () => {
     expect(normaliseHref('http://example.com/')).toBe('http://example.com/');
   });
