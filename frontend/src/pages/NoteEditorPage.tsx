@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import type { Note } from '../api/notes';
+import { NoteEditor } from '../notes/NoteEditor';
 import { useNote } from '../notes/useNote';
 import { relativeTime } from '../notes/relativeTime';
 import styles from './NoteEditorPage.module.css';
@@ -26,6 +28,13 @@ function BackIcon() {
   );
 }
 
+function savedLabel(note: Note | null, isDirty: boolean): string {
+  if (isDirty) {
+    return 'Unsaved changes';
+  }
+  return note ? `Saved ${relativeTime(note.updatedAt)}` : 'Not saved yet';
+}
+
 function createdLabel(iso: string | undefined): string {
   if (!iso) {
     return 'Not saved yet';
@@ -41,16 +50,55 @@ function createdLabel(iso: string | undefined): string {
   })}`;
 }
 
+function NoteSheet({ note }: { note: Note | null }) {
+  const [title, setTitle] = useState(note?.title ?? '');
+  const [content, setContent] = useState(note?.content ?? '');
+  const isCreating = note === null;
+  const [baseline] = useState(note?.content ?? '');
+  const isDirty = title !== (note?.title ?? '') || content !== baseline;
+
+  return (
+    <div className={`panel ${styles.sheet}`}>
+      <div className={styles.head}>
+        <label className="visually-hidden" htmlFor="note-title">
+          Note title
+        </label>
+        <input
+          id="note-title"
+          className={styles.title}
+          value={title}
+          placeholder="Untitled note"
+          maxLength={200}
+          onChange={(event) => setTitle(event.target.value)}
+        />
+        <p className={styles.created}>{createdLabel(note?.createdAt)}</p>
+      </div>
+
+      <NoteEditor content={note?.content ?? ''} onChange={setContent} />
+
+      <div className={styles.footer}>
+        <p className={styles.savedAt}>{savedLabel(note, isDirty)}</p>
+        <div className={styles.actions}>
+          <Link to="/dashboard" className="btn">
+            Cancel
+          </Link>
+          <button type="button" className="btn btn--primary" disabled={isCreating && !title.trim()}>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function NoteEditorPage() {
   const { id } = useParams<{ id: string }>();
   // the create route reuses this page, and carries no id to fetch
   const noteId = id === NEW_NOTE ? undefined : id;
-  const isCreating = noteId === undefined;
 
   const { note, isLoading, error, isMissing } = useNote(noteId);
-  const [title, setTitle] = useState('');
 
-  const shell = (children: React.ReactNode) => (
+  const shell = (children: ReactNode) => (
     <div className={styles.page}>
       <Link to="/dashboard" className={styles.back}>
         <span className={styles.backIcon} aria-hidden="true">
@@ -84,39 +132,5 @@ export function NoteEditorPage() {
     );
   }
 
-  return shell(
-    <div className={`panel ${styles.sheet}`}>
-      <div className={styles.head}>
-        <label className="visually-hidden" htmlFor="note-title">
-          Note title
-        </label>
-        <input
-          id="note-title"
-          className={styles.title}
-          value={title || note?.title || ''}
-          placeholder="Untitled note"
-          maxLength={200}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-        <p className={styles.created}>{createdLabel(note?.createdAt)}</p>
-      </div>
-
-      {/* toolbar and editing surface arrive in the next chunk */}
-      <div className={styles.body} />
-
-      <div className={styles.footer}>
-        <p className={styles.savedAt}>
-          {note ? `Saved ${relativeTime(note.updatedAt)}` : 'Not saved yet'}
-        </p>
-        <div className={styles.actions}>
-          <Link to="/dashboard" className="btn">
-            Cancel
-          </Link>
-          <button type="button" className="btn btn--primary" disabled={isCreating && !title.trim()}>
-            Save
-          </button>
-        </div>
-      </div>
-    </div>,
-  );
+  return shell(<NoteSheet note={note} />);
 }
