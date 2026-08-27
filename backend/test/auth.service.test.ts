@@ -6,12 +6,15 @@ import { verifyToken } from '../src/lib/jwt';
 import { type UserDocument, userRepository } from '../src/repositories/user.repository';
 import * as authService from '../src/services/auth.service';
 
+const CREATED_AT = new Date('2026-01-15T10:00:00.000Z');
+
 function fakeUser(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     _id: { toString: () => 'user-id-1' },
     email: 'bob@example.com',
     name: 'Bob',
     password: 'hashed',
+    createdAt: CREATED_AT,
     comparePassword: sinon.stub().resolves(true),
     ...overrides,
   } as unknown as UserDocument;
@@ -47,6 +50,7 @@ describe('auth service', () => {
         id: 'user-id-1',
         email: 'bob@example.com',
         name: 'Bob',
+        createdAt: CREATED_AT,
       });
     });
 
@@ -159,7 +163,12 @@ describe('auth service', () => {
 
       const user = await authService.getCurrentUser('user-id-1');
 
-      expect(user).to.deep.equal({ id: 'user-id-1', email: 'bob@example.com', name: 'Bob' });
+      expect(user).to.deep.equal({
+        id: 'user-id-1',
+        email: 'bob@example.com',
+        name: 'Bob',
+        createdAt: CREATED_AT,
+      });
     });
 
     it('rejects with 401 when the account no longer exists', async () => {

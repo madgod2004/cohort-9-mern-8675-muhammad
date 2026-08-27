@@ -6,6 +6,7 @@ import { authApi } from '../api/auth';
 import { ApiError } from '../api/client';
 import { AuthProvider } from '../auth/AuthProvider';
 import { LoginPage } from './LoginPage';
+import { fakeUser } from '../../test/factories';
 
 jest.mock('../api/auth', () => ({
   authApi: { me: jest.fn(), login: jest.fn(), signup: jest.fn(), logout: jest.fn() },
@@ -38,7 +39,7 @@ describe('LoginPage', () => {
   });
 
   it('submits what the user typed', async () => {
-    mocked.login.mockResolvedValue({ id: '1', email: 'alice@example.com', name: 'Alice' });
+    mocked.login.mockResolvedValue(fakeUser());
     renderPage();
 
     await userEvent.type(screen.getByLabelText('Email'), 'alice@example.com');

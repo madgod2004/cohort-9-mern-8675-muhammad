@@ -1,0 +1,163 @@
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 48px 24px;
+  box-sizing: border-box;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 460px;
+  padding: 34px;
+  box-sizing: border-box;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 74px;
+  height: 74px;
+  font-family: var(--display);
+  font-size: 30px;
+  background: var(--avatar);
+  border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.email {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 18px;
+  border: var(--border-w) solid var(--ink);
+  border-radius: 16px;
+}
+
+.statNotes {
+  background: var(--tint-1);
+}
+
+.statJoined {
+  background: var(--tint-2);
+}
+
+.statValue {
+  font-family: var(--display);
+  font-size: 30px;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-meta);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: var(--border-w) solid var(--ink);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--surface-input);
+}
+
+.detailLabel {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.detailValue {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+.logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+}
+
+.back {
+  align-self: center;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+@media (width <= 480px) {
+  .page {
+    padding: 24px 18px;
+  }
+
+  .card {
+    gap: 20px;
+    padding: 24px;
+  }
+
+  .avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+
+  .name {
+    font-size: 24px;
+  }
+}

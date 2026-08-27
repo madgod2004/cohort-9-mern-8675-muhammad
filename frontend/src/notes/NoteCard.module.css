@@ -1,0 +1,110 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 190px;
+  padding: 20px 20px 18px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  padding: 0;
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--ink);
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  /* long single-word titles must not push the menu button off the card */
+  overflow-wrap: anywhere;
+}
+
+.title:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.renameForm {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.renameInput {
+  width: 100%;
+  padding: 4px 8px;
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--ink);
+  background: var(--surface-input);
+  border: var(--border-w) solid var(--ink);
+  border-radius: 10px;
+}
+
+.renameInput:focus {
+  outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.menuSlot {
+  flex-shrink: 0;
+}
+
+.preview {
+  flex-grow: 1;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-body);
+  overflow-wrap: anywhere;
+}
+
+.previewEmpty {
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.error {
+  margin: 0;
+}
+
+.timestamp {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-meta);
+}
+
+@media (width <= 480px) {
+  .card {
+    min-height: 0;
+    gap: 8px;
+    padding: 16px 16px 14px;
+    border-radius: 18px;
+  }
+
+  .title,
+  .renameInput {
+    font-size: 19px;
+  }
+
+  .preview {
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+
+  .timestamp {
+    font-size: 12.5px;
+  }
+}
