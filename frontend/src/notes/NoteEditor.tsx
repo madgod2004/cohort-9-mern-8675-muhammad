@@ -1,6 +1,6 @@
 import { EditorContent, useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 
+import { editorExtensions } from './editorExtensions';
 import { EditorToolbar } from './EditorToolbar';
 import styles from './NoteEditor.module.css';
 
@@ -11,15 +11,7 @@ interface NoteEditorProps {
 
 export function NoteEditor({ content, onChange }: NoteEditorProps) {
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        link: {
-          openOnClick: false,
-          protocols: ['http', 'https', 'mailto'],
-          HTMLAttributes: { target: null, rel: null },
-        },
-      }),
-    ],
+    extensions: editorExtensions,
     content,
     onUpdate: ({ editor: current }) => onChange(current.getHTML()),
     editorProps: {

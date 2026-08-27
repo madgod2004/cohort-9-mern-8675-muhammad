@@ -105,7 +105,6 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
     }),
   });
 
-
   function selectWordAtCursor(): boolean {
     const { $from, empty } = editor.state.selection;
     if (!empty) {
@@ -131,7 +130,8 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
 
   function toggleLink() {
     if (active.link) {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      // unsetLink already clears the whole mark from a cursor inside it
+      editor.chain().focus().unsetLink().run();
       return;
     }
 
@@ -148,7 +148,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
     setIsAddingLink(false);
 
     if (hasWord) {
-      editor.chain().focus().extendMarkRange('link').setLink({ href }).run();
+      editor.chain().focus().setLink({ href }).run();
     } else {
       // nothing to attach the link to, so the address becomes the text
       editor
