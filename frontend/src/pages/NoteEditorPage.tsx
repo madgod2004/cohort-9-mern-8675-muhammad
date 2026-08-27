@@ -1,7 +1,8 @@
-import { type ReactNode, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { type ReactNode, useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import type { Note } from '../api/notes';
+import { type Note, notesApi } from '../api/notes';
+import { ConfirmLeave } from '../notes/ConfirmLeave';
 import { NoteEditor } from '../notes/NoteEditor';
 import { useNote } from '../notes/useNote';
 import { relativeTime } from '../notes/relativeTime';
@@ -28,6 +29,26 @@ function BackIcon() {
   );
 }
 
+function BackLink({ onIntercept }: { onIntercept?: () => boolean }) {
+  return (
+    <Link
+      to="/dashboard"
+      className={styles.back}
+      onClick={(event) => {
+        // the handler returns true when it has taken over the navigation
+        if (onIntercept?.()) {
+          event.preventDefault();
+        }
+      }}
+    >
+      <span className={styles.backIcon} aria-hidden="true">
+        <BackIcon />
+      </span>
+      Back to notes
+    </Link>
+  );
+}
+
 function savedLabel(note: Note | null, isDirty: boolean): string {
   if (isDirty) {
     return 'Unsaved changes';
@@ -51,43 +72,132 @@ function createdLabel(iso: string | undefined): string {
 }
 
 function NoteSheet({ note }: { note: Note | null }) {
+  const navigate = useNavigate();
+
+  // the last version the server acknowledged, which the footer reports on
+  const [saved, setSaved] = useState(note);
   const [title, setTitle] = useState(note?.title ?? '');
   const [content, setContent] = useState(note?.content ?? '');
-  const isCreating = note === null;
-  const [baseline] = useState(note?.content ?? '');
-  const isDirty = title !== (note?.title ?? '') || content !== baseline;
+  // TipTap normalises whatever it is given, so the comparison is against the
+  // content as last saved rather than against the note as it arrived
+  const [baseline, setBaseline] = useState(note?.content ?? '');
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isConfirmingLeave, setIsConfirmingLeave] = useState(false);
+
+  const isCreating = saved === null;
+  const trimmedTitle = title.trim();
+  const isDirty = title !== (saved?.title ?? '') || content !== baseline;
+  const canSave = trimmedTitle.length > 0 && !isSaving && (isDirty || isCreating);
+
+  useEffect(() => {
+    if (!isDirty) {
+      return;
+    }
+
+    function warn(event: BeforeUnloadEvent) {
+      event.preventDefault();
+    }
+
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [isDirty]);
+
+  async function handleSave() {
+    if (!canSave) {
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      const result = saved
+        ? await notesApi.update(saved.id, { title: trimmedTitle, content })
+        : await notesApi.create({ title: trimmedTitle, content });
+
+      setSaved(result);
+      setTitle(result.title);
+      setBaseline(content);
+
+      if (!saved) {
+        void navigate(`/notes/${result.id}`, { replace: true });
+      }
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Could not save the note.');
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  function interceptLeave(): boolean {
+    if (!isDirty) {
+      return false;
+    }
+    setIsConfirmingLeave(true);
+    return true;
+  }
 
   return (
-    <div className={`panel ${styles.sheet}`}>
-      <div className={styles.head}>
-        <label className="visually-hidden" htmlFor="note-title">
-          Note title
-        </label>
-        <input
-          id="note-title"
-          className={styles.title}
-          value={title}
-          placeholder="Untitled note"
-          maxLength={200}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-        <p className={styles.created}>{createdLabel(note?.createdAt)}</p>
-      </div>
+    <>
+      <BackLink onIntercept={interceptLeave} />
 
-      <NoteEditor content={note?.content ?? ''} onChange={setContent} />
+      <div className={`panel ${styles.sheet}`}>
+        <div className={styles.head}>
+          <label className="visually-hidden" htmlFor="note-title">
+            Note title
+          </label>
+          <input
+            id="note-title"
+            className={styles.title}
+            value={title}
+            placeholder="Untitled note"
+            maxLength={200}
+            onChange={(event) => setTitle(event.target.value)}
+          />
+          <p className={styles.created}>{createdLabel(saved?.createdAt)}</p>
+        </div>
 
-      <div className={styles.footer}>
-        <p className={styles.savedAt}>{savedLabel(note, isDirty)}</p>
-        <div className={styles.actions}>
-          <Link to="/dashboard" className="btn">
-            Cancel
-          </Link>
-          <button type="button" className="btn btn--primary" disabled={isCreating && !title.trim()}>
-            Save
-          </button>
+        <NoteEditor content={note?.content ?? ''} onChange={setContent} />
+
+        {saveError ? (
+          <p className={`error-text ${styles.saveError}`} role="alert">
+            {saveError}
+          </p>
+        ) : null}
+
+        <div className={styles.footer}>
+          <p className={styles.savedAt}>{savedLabel(saved, isDirty)}</p>
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                if (!interceptLeave()) void navigate('/dashboard');
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn--primary"
+              disabled={!canSave}
+              onClick={() => void handleSave()}
+            >
+              {isSaving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {isConfirmingLeave ? (
+        <ConfirmLeave
+          onStay={() => setIsConfirmingLeave(false)}
+          onDiscard={() => void navigate('/dashboard')}
+        />
+      ) : null}
+    </>
   );
 }
 
@@ -98,39 +208,35 @@ export function NoteEditorPage() {
 
   const { note, isLoading, error, isMissing } = useNote(noteId);
 
-  const shell = (children: ReactNode) => (
-    <div className={styles.page}>
-      <Link to="/dashboard" className={styles.back}>
-        <span className={styles.backIcon} aria-hidden="true">
-          <BackIcon />
-        </span>
-        Back to notes
-      </Link>
-      {children}
-    </div>
-  );
+  const shell = (children: ReactNode) => <div className={styles.page}>{children}</div>;
 
   if (isLoading) {
     return shell(
-      <p className={styles.status} role="status">
-        Loading the note…
-      </p>,
+      <>
+        <BackLink />
+        <p className={styles.status} role="status">
+          Loading the note…
+        </p>
+      </>,
     );
   }
 
   if (error) {
     return shell(
-      <div className={`panel ${styles.notice}`} role="alert">
-        <p className={styles.noticeHeading}>{isMissing ? 'Note not found' : 'Something broke'}</p>
-        <p className={styles.noticeText}>
-          {isMissing ? 'It may have been deleted from another tab.' : error}
-        </p>
-        <Link to="/dashboard" className="btn">
-          Back to notes
-        </Link>
-      </div>,
+      <>
+        <BackLink />
+        <div className={`panel ${styles.notice}`} role="alert">
+          <p className={styles.noticeHeading}>{isMissing ? 'Note not found' : 'Something broke'}</p>
+          <p className={styles.noticeText}>
+            {isMissing ? 'It may have been deleted from another tab.' : error}
+          </p>
+          <Link to="/dashboard" className="btn">
+            Back to notes
+          </Link>
+        </div>
+      </>,
     );
   }
 
-  return shell(<NoteSheet note={note} />);
+  return shell(<NoteSheet key={noteId ?? NEW_NOTE} note={note} />);
 }

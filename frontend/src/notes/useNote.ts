@@ -14,6 +14,15 @@ export function useNote(id: string | undefined): UseNoteResult {
   const [isLoading, setIsLoading] = useState(id !== undefined);
   const [error, setError] = useState<string | null>(null);
   const [isMissing, setIsMissing] = useState(false);
+  const [loadedId, setLoadedId] = useState(id);
+
+  if (id !== loadedId) {
+    setLoadedId(id);
+    setNote(null);
+    setIsLoading(id !== undefined);
+    setError(null);
+    setIsMissing(false);
+  }
 
   const load = useCallback((noteId: string) => {
     return notesApi
