@@ -29,7 +29,7 @@ function BackIcon() {
   );
 }
 
-function BackLink({ onIntercept }: { onIntercept?: () => boolean }) {
+function BackLink({ onIntercept }: Readonly<{ onIntercept?: () => boolean }>) {
   return (
     <Link
       to="/dashboard"
@@ -43,7 +43,7 @@ function BackLink({ onIntercept }: { onIntercept?: () => boolean }) {
     >
       <span className={styles.backIcon} aria-hidden="true">
         <BackIcon />
-      </span>
+      </span>{' '}
       Back to notes
     </Link>
   );
@@ -71,7 +71,7 @@ function createdLabel(iso: string | undefined): string {
   })}`;
 }
 
-function NoteSheet({ note }: { note: Note | null }) {
+function NoteSheet({ note }: Readonly<{ note: Note | null }>) {
   const navigate = useNavigate();
 
   // the last version the server acknowledged, which the footer reports on
@@ -214,9 +214,7 @@ export function NoteEditorPage() {
     return shell(
       <>
         <BackLink />
-        <p className={styles.status} role="status">
-          Loading the note…
-        </p>
+        <output className={styles.status}>Loading the note…</output>
       </>,
     );
   }

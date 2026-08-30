@@ -9,7 +9,7 @@ interface NoteEditorProps {
   onChange: (html: string) => void;
 }
 
-export function NoteEditor({ content, onChange }: NoteEditorProps) {
+export function NoteEditor({ content, onChange }: Readonly<NoteEditorProps>) {
   const editor = useEditor({
     extensions: editorExtensions,
     content,

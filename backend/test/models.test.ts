@@ -23,7 +23,7 @@ describe('User model', () => {
     });
 
     const found = await User.findById(user._id);
-    expect(found?.password).to.equal(undefined);
+    expect(found?.password).to.be.undefined;
 
     const withPassword = await User.findById(user._id).select('+password');
     expect(withPassword?.password).to.be.a('string');

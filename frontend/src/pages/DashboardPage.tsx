@@ -73,11 +73,7 @@ export function DashboardPage() {
         </button>
       </div>
 
-      {isLoading ? (
-        <p className={styles.status} role="status">
-          Loading your notes…
-        </p>
-      ) : null}
+      {isLoading ? <output className={styles.status}>Loading your notes…</output> : null}
 
       {error ? (
         <div className={`panel ${styles.notice}`} role="alert">

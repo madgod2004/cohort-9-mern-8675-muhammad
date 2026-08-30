@@ -1,4 +1,4 @@
-const ALLOWED_PROTOCOLS = ['http:', 'https:', 'mailto:'];
+const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'mailto:']);
 
 export function normaliseHref(raw: string): string | null {
   const trimmed = raw.trim();
@@ -19,7 +19,7 @@ export function normaliseHref(raw: string): string | null {
     return null;
   }
 
-  if (!ALLOWED_PROTOCOLS.includes(url.protocol)) {
+  if (!ALLOWED_PROTOCOLS.has(url.protocol)) {
     return null;
   }
 

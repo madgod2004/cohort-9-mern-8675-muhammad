@@ -11,7 +11,13 @@ interface NoteMenuProps {
   onDelete: () => void;
 }
 
-export function NoteMenu({ noteTitle, onRename, onDuplicate, onExport, onDelete }: NoteMenuProps) {
+export function NoteMenu({
+  noteTitle,
+  onRename,
+  onDuplicate,
+  onExport,
+  onDelete,
+}: Readonly<NoteMenuProps>) {
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);

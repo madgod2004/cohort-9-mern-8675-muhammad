@@ -7,7 +7,7 @@ interface ConfirmLeaveProps {
   onStay: () => void;
 }
 
-export function ConfirmLeave({ onDiscard, onStay }: ConfirmLeaveProps) {
+export function ConfirmLeave({ onDiscard, onStay }: Readonly<ConfirmLeaveProps>) {
   const focusOnMount = useCallback((button: HTMLButtonElement | null) => {
     button?.focus();
   }, []);

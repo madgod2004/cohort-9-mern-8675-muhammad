@@ -36,7 +36,7 @@ describe('POST /api/auth/signup', () => {
   it('does not put the token in the response body', async () => {
     const res = await request(app).post('/api/auth/signup').send(credentials);
 
-    expect(res.body.token).to.equal(undefined);
+    expect(res.body.token).to.be.undefined;
     expect(JSON.stringify(res.body)).to.not.include('eyJ');
   });
 

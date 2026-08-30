@@ -55,11 +55,13 @@ export function toPlainText(note: Note): string {
 }
 
 export function fileNameFor(note: Note, format: ExportFormat): string {
+  // the collapse above leaves no repeated dashes, so there is only ever one to trim
   const slug = note.title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 60);
+    .replaceAll(/[^a-z0-9]+/g, '-')
+    .slice(0, 60)
+    .replace(/^-/, '')
+    .replace(/-$/, '');
 
   return `${slug || 'note'}.${format === 'markdown' ? 'md' : 'txt'}`;
 }

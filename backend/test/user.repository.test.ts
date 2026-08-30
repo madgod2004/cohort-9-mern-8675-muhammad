@@ -28,7 +28,7 @@ describe('user repository', () => {
     it('returns null when no user matches', async () => {
       const found = await userRepository.findByEmail('nobody@example.com');
 
-      expect(found).to.equal(null);
+      expect(found).to.be.null;
     });
 
     it('does not return the password', async () => {
@@ -54,7 +54,7 @@ describe('user repository', () => {
     it('returns null when no user matches', async () => {
       const found = await userRepository.findByEmailWithPassword('nobody@example.com');
 
-      expect(found).to.equal(null);
+      expect(found).to.be.null;
     });
   });
 
@@ -70,7 +70,7 @@ describe('user repository', () => {
     it('returns null for an id that does not exist', async () => {
       const found = await userRepository.findById(new Types.ObjectId().toString());
 
-      expect(found).to.equal(null);
+      expect(found).to.be.null;
     });
   });
 });

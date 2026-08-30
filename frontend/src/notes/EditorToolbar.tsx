@@ -36,7 +36,7 @@ const icons = {
 
 type IconName = keyof typeof icons;
 
-function Icon({ name }: { name: IconName }) {
+function Icon({ name }: Readonly<{ name: IconName }>) {
   return (
     <svg
       width="18"
@@ -71,7 +71,7 @@ function ToolbarButton({
   onClick,
   buttonRef,
   isExpanded,
-}: ToolbarButtonProps) {
+}: Readonly<ToolbarButtonProps>) {
   return (
     <button
       type="button"
@@ -88,7 +88,7 @@ function ToolbarButton({
   );
 }
 
-export function EditorToolbar({ editor }: { editor: Editor }) {
+export function EditorToolbar({ editor }: Readonly<{ editor: Editor }>) {
   const [isAddingLink, setIsAddingLink] = useState(false);
   const [hasWord, setHasWord] = useState(false);
   const linkButtonRef = useRef<HTMLButtonElement>(null);

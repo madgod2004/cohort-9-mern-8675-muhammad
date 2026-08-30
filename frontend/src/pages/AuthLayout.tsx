@@ -10,7 +10,7 @@ interface AuthLayoutProps {
   footer: ReactNode;
 }
 
-export function AuthLayout({ heading, subheading, children, footer }: AuthLayoutProps) {
+export function AuthLayout({ heading, subheading, children, footer }: Readonly<AuthLayoutProps>) {
   return (
     <main className={styles.page}>
       <p className={styles.wordmark}>{APP_NAME}</p>

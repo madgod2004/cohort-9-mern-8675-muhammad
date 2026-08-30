@@ -1,4 +1,4 @@
-import { type FormEvent, type KeyboardEvent, useCallback, useState } from 'react';
+import { type SyntheticEvent, type KeyboardEvent, useCallback, useState } from 'react';
 
 import { normaliseHref } from './linkHref';
 import styles from './NoteEditor.module.css';
@@ -10,7 +10,7 @@ interface LinkBarProps {
   onCancel: () => void;
 }
 
-export function LinkBar({ onApply, onCancel }: LinkBarProps) {
+export function LinkBar({ onApply, onCancel }: Readonly<LinkBarProps>) {
   const [draft, setDraft] = useState(DEFAULT_DRAFT);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +19,7 @@ export function LinkBar({ onApply, onCancel }: LinkBarProps) {
     input?.setSelectionRange(input.value.length, input.value.length);
   }, []);
 
-  function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: SyntheticEvent) {
     event.preventDefault();
 
     const href = normaliseHref(draft);

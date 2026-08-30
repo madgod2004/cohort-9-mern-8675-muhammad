@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import { useAuth } from './useAuth';
 
-export function GuestRoute({ children }: { children: ReactNode }) {
+export function GuestRoute({ children }: Readonly<{ children: ReactNode }>) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {

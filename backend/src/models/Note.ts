@@ -43,12 +43,12 @@ noteSchema.index({ title: 'text', contentText: 'text' });
 function toPlainText(html: string): string {
   const spaced = html.replace(/<\/(p|div|h[1-6]|li|blockquote|tr|td)>|<br\s*\/?>/gi, ' ');
   return sanitizeHtml(spaced, { allowedTags: [], allowedAttributes: {} })
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&amp;/g, '&')
-    .replace(/\s+/g, ' ')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&#39;', "'")
+    .replaceAll('&amp;', '&')
+    .replaceAll(/\s+/g, ' ')
     .trim();
 }
 

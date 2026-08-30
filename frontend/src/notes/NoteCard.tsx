@@ -1,4 +1,4 @@
-import { type FormEvent, type KeyboardEvent, useCallback, useRef, useState } from 'react';
+import { type SyntheticEvent, type KeyboardEvent, useCallback, useRef, useState } from 'react';
 
 import type { Note } from '../api/notes';
 import { downloadNote, type ExportFormat } from './export';
@@ -12,7 +12,7 @@ const TINT_COUNT = 4;
 function tintFor(id: string): string {
   let hash = 0;
   for (let i = 0; i < id.length; i += 1) {
-    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+    hash = (hash * 31 + (id.codePointAt(i) ?? 0)) >>> 0;
   }
   return `var(--tint-${(hash % TINT_COUNT) + 1})`;
 }
@@ -30,7 +30,13 @@ interface NoteCardProps {
   onDelete: (id: string) => Promise<unknown>;
 }
 
-export function NoteCard({ note, onOpen, onRename, onDuplicate, onDelete }: NoteCardProps) {
+export function NoteCard({
+  note,
+  onOpen,
+  onRename,
+  onDuplicate,
+  onDelete,
+}: Readonly<NoteCardProps>) {
   const [isRenaming, setIsRenaming] = useState(false);
   const [draftTitle, setDraftTitle] = useState(note.title);
   const [error, setError] = useState<string | null>(null);
@@ -84,7 +90,7 @@ export function NoteCard({ note, onOpen, onRename, onDuplicate, onDelete }: Note
     }
   }
 
-  function handleSubmit(event: FormEvent) {
+  function handleSubmit(event: SyntheticEvent) {
     event.preventDefault();
     void commitRename();
   }
@@ -104,14 +110,9 @@ export function NoteCard({ note, onOpen, onRename, onDuplicate, onDelete }: Note
 
   const preview = previewOf(note);
 
+  // the title button opens the note, not the card, so the keyboard can reach it
   return (
-    <article
-      className={`card ${styles.card}`}
-      style={{ background: tintFor(note.id) }}
-      onClick={() => {
-        if (!isRenaming) onOpen(note);
-      }}
-    >
+    <article className={`card ${styles.card}`} style={{ background: tintFor(note.id) }}>
       <div className={styles.header}>
         {isRenaming ? (
           <form className={styles.renameForm} onSubmit={handleSubmit}>
@@ -130,26 +131,12 @@ export function NoteCard({ note, onOpen, onRename, onDuplicate, onDelete }: Note
             />
           </form>
         ) : (
-          // a button as well as the card click, so the note opens from the
-          // keyboard too; the click stops here or the card would open it twice
-          <button
-            type="button"
-            className={styles.title}
-            onClick={(event) => {
-              event.stopPropagation();
-              onOpen(note);
-            }}
-          >
+          <button type="button" className={styles.title} onClick={() => onOpen(note)}>
             {note.title}
           </button>
         )}
 
-        <div
-          className={styles.menuSlot}
-          onClick={(event) => {
-            event.stopPropagation();
-          }}
-        >
+        <div className={styles.menuSlot}>
           <NoteMenu
             noteTitle={note.title}
             onRename={startRename}

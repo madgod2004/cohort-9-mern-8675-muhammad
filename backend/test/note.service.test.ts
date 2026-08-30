@@ -149,10 +149,13 @@ describe('note service', () => {
   });
 
   describe('deleteNote', () => {
-    it('resolves when a note was deleted', async () => {
-      sinon.stub(noteRepository, 'deleteByIdForOwner').resolves(fakeNote());
+    it('deletes the note for its owner', async () => {
+      const remove = sinon.stub(noteRepository, 'deleteByIdForOwner').resolves(fakeNote());
 
       await noteService.deleteNote('note-id-1', OWNER);
+
+      // the owner has to reach the query, or one user could delete another's note
+      expect(remove.calledOnceWithExactly('note-id-1', OWNER)).to.equal(true);
     });
 
     it('rejects with 404 when nothing was deleted', async () => {

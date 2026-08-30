@@ -22,9 +22,25 @@ export function Field({
   hint,
   autoComplete,
   required,
-}: FieldProps) {
+}: Readonly<FieldProps>) {
   const id = useId();
   const messageId = `${id}-message`;
+
+  // one message slot, so the error and the hint never both claim messageId
+  let message = null;
+  if (error) {
+    message = (
+      <span id={messageId} className="error-text" role="alert">
+        {error}
+      </span>
+    );
+  } else if (hint) {
+    message = (
+      <span id={messageId} className="hint-text">
+        {hint}
+      </span>
+    );
+  }
 
   return (
     <div className={styles.field}>
@@ -42,15 +58,7 @@ export function Field({
         aria-invalid={error ? true : undefined}
         aria-describedby={error || hint ? messageId : undefined}
       />
-      {error ? (
-        <span id={messageId} className="error-text" role="alert">
-          {error}
-        </span>
-      ) : hint ? (
-        <span id={messageId} className="hint-text">
-          {hint}
-        </span>
-      ) : null}
+      {message}
     </div>
   );
 }

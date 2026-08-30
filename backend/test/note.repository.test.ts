@@ -55,17 +55,17 @@ describe('note repository', () => {
     it('returns null for a note owned by someone else', async () => {
       const created = await note(alice);
 
-      expect(await noteRepository.findByIdForOwner(created._id.toString(), bob)).to.equal(null);
+      expect(await noteRepository.findByIdForOwner(created._id.toString(), bob)).to.be.null;
     });
 
     it('returns null for a malformed id instead of throwing', async () => {
-      expect(await noteRepository.findByIdForOwner('not-an-object-id', alice)).to.equal(null);
+      expect(await noteRepository.findByIdForOwner('not-an-object-id', alice)).to.be.null;
     });
 
     it('returns null for a well-formed id that does not exist', async () => {
       const missing = new Types.ObjectId().toString();
 
-      expect(await noteRepository.findByIdForOwner(missing, alice)).to.equal(null);
+      expect(await noteRepository.findByIdForOwner(missing, alice)).to.be.null;
     });
   });
 
@@ -87,7 +87,7 @@ describe('note repository', () => {
 
       const deleted = await noteRepository.deleteByIdForOwner(created._id.toString(), alice);
 
-      expect(deleted).to.not.equal(null);
+      expect(deleted).to.not.be.null;
       expect(await noteRepository.listByOwner(alice)).to.deep.equal([]);
     });
 
@@ -96,12 +96,12 @@ describe('note repository', () => {
 
       const deleted = await noteRepository.deleteByIdForOwner(created._id.toString(), bob);
 
-      expect(deleted).to.equal(null);
+      expect(deleted).to.be.null;
       expect(await noteRepository.listByOwner(alice)).to.have.lengthOf(1);
     });
 
     it('returns null for a malformed id', async () => {
-      expect(await noteRepository.deleteByIdForOwner('not-an-object-id', alice)).to.equal(null);
+      expect(await noteRepository.deleteByIdForOwner('not-an-object-id', alice)).to.be.null;
     });
   });
 });
