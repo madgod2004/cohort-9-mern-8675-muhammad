@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import styles from './Field.module.css';
 
@@ -27,7 +27,7 @@ export function Field({
   const messageId = `${id}-message`;
 
   // one message slot, so the error and the hint never both claim messageId
-  let message = null;
+  let message: ReactNode = null;
   if (error) {
     message = (
       <span id={messageId} className="error-text" role="alert">

@@ -177,7 +177,7 @@ component props, and dedicated Chai matchers.
 
 ## How it is put together
 
-```
+```text
 backend/
   src/
     config/        environment, validated with Zod at startup
